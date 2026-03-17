@@ -51,7 +51,7 @@ func main() {
 	)
 
 	registerCollectors(cfg, log, registry)
-	registerBuildInfo()
+	registerBuildInfo(registry)
 
 	mux := http.NewServeMux()
 	setupHandlers(mux, cfg)
@@ -94,7 +94,7 @@ func main() {
 	log.Info("server stopped gracefully")
 }
 
-func registerBuildInfo() {
+func registerBuildInfo(registry prometheus.Registerer) {
 	buildInfo := prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
 			Namespace: collectors.Namespace,
@@ -104,7 +104,7 @@ func registerBuildInfo() {
 		[]string{"version", "revision", "branch", "go_version"},
 	)
 	buildInfo.WithLabelValues(Version, Revision, Branch, runtime.Version()).Set(1)
-	prometheus.MustRegister(buildInfo)
+	registry.MustRegister(buildInfo)
 }
 
 func registerCollectors(cfg *config.Config, log *slog.Logger, registry prometheus.Registerer) {
