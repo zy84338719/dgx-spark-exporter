@@ -1,7 +1,7 @@
 # DGX Spark Exporter
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/zy84338719/dgx-spark-exporter)](https://goreportcard.com/report/github.com/zy84338719/dgx-spark-exporter)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
 A [Prometheus](https://prometheus.io) metrics exporter for [NVIDIA DGX Spark](https://www.nvidia.com/en-us/products/workstations/dgx-spark/) systems.
 
@@ -218,7 +218,7 @@ make lint     # Run golangci-lint
 
 ## License
 
-[Apache 2.0](LICENSE)
+[BSD 3-Clause](LICENSE)
 
 ## Contributing
 

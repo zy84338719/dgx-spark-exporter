@@ -1,7 +1,7 @@
 # DGX Spark Exporter
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/zy84338719/dgx-spark-exporter)](https://goreportcard.com/report/github.com/zy84338719/dgx-spark-exporter)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE)
 
 [English](README.md) | 简体中文
 
@@ -220,7 +220,7 @@ make lint     # 运行 golangci-lint
 
 ## 许可证
 
-[Apache 2.0](LICENSE)
+[BSD 3-Clause](LICENSE)
 
 ## 贡献
 

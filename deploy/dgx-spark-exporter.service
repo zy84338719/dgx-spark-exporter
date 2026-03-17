@@ -1,12 +1,12 @@
 [Unit]
-Description=DGX Spark Prometheus Exporter
+Description=DGX Spark Exporter
 Documentation=https://github.com/zy84338719/dgx-spark-exporter
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/dgx-spark-exporter -listen :9835
+ExecStart=/usr/local/bin/dgx-spark-exporter -listen :9876
 Restart=on-failure
 RestartSec=5
 
