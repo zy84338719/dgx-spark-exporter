@@ -1,0 +1,31 @@
+[Unit]
+Description=DGX Spark Prometheus Exporter
+Documentation=https://github.com/zy84338719/dgx-spark-exporter
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/dgx-spark-exporter -listen :9835
+Restart=on-failure
+RestartSec=5
+
+User=root
+Group=root
+
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadOnlyPaths=/proc /sys
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=dgx-spark-exporter
+
+[Install]
+WantedBy=multi-user.target
