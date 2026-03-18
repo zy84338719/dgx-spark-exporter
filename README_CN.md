@@ -223,6 +223,8 @@ scrape_configs:
 
 导入 `deploy/grafana-dashboard.json` 到 Grafana 即可使用现成的可视化面板。
 
+![仪表盘预览](dashboard.png)
+
 ## 项目结构
 
 ```

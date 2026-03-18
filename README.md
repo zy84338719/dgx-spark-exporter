@@ -221,6 +221,8 @@ scrape_configs:
 
 Import `deploy/grafana-dashboard.json` into Grafana for ready-to-use visualizations.
 
+![Dashboard Preview](dashboard.png)
+
 ## Project Structure
 
 ```
