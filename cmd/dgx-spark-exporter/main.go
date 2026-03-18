@@ -123,6 +123,18 @@ func registerCollectors(cfg *config.Config, log *slog.Logger, registry prometheu
 	if cfg.IsCollectorEnabled("network") {
 		registry.MustRegister(collectors.NewNetworkCollector(cfg, log))
 	}
+	if cfg.IsCollectorEnabled("system") {
+		registry.MustRegister(collectors.NewSystemCollector(cfg, log))
+	}
+	if cfg.IsCollectorEnabled("swap") {
+		registry.MustRegister(collectors.NewSwapCollector(cfg, log))
+	}
+	if cfg.IsCollectorEnabled("power") {
+		registry.MustRegister(collectors.NewPowerCollector(cfg, log))
+	}
+	if cfg.IsCollectorEnabled("storage") {
+		registry.MustRegister(collectors.NewStorageCollector(cfg, log))
+	}
 }
 
 func setupHandlers(mux *http.ServeMux, cfg *config.Config) {

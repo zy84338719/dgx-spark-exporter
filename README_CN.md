@@ -33,11 +33,13 @@
 
 ### CPU 指标
 
-| 指标名 | 类型 | 描述 |
-|--------|------|------|
-| `dgx_spark_cpu_usage_ratio` | Gauge | CPU 使用率 (0-1) |
-| `dgx_spark_cpu_temperature_celsius` | Gauge | CPU 温度（摄氏度） |
-| `dgx_spark_cpu_frequency_hertz` | Gauge | CPU 平均核心频率（Hz） |
+| 指标名 | 类型 | 标签 | 描述 |
+|--------|------|------|------|
+| `dgx_spark_cpu_usage_ratio` | Gauge | | CPU 使用率 (0-1) |
+| `dgx_spark_cpu_temperature_celsius` | Gauge | zone, type | CPU 温度（摄氏度） |
+| `dgx_spark_cpu_frequency_hertz` | Gauge | | CPU 平均核心频率（Hz） |
+| `dgx_spark_cpu_time_seconds_total` | Counter | mode | 各模式 CPU 时间总计 |
+| `dgx_spark_cpu_cores` | Gauge | | CPU 核心数 |
 
 ### GPU 指标
 
@@ -86,6 +88,43 @@
 | `dgx_spark_network_receive_dropped_total` | Counter | interface | 接收丢弃数 |
 | `dgx_spark_network_transmit_dropped_total` | Counter | interface | 发送丢弃数 |
 
+### 系统指标
+
+| 指标名 | 类型 | 标签 | 描述 |
+|--------|------|------|------|
+| `dgx_spark_load_average` | Gauge | period | 系统负载（1m、5m、15m） |
+| `dgx_spark_system_uptime_seconds` | Gauge | | 系统运行时间（秒） |
+| `dgx_spark_processes_running` | Gauge | | 运行中的进程数 |
+| `dgx_spark_processes_blocked` | Gauge | | 阻塞的进程数 |
+| `dgx_spark_context_switches_total` | Counter | | 上下文切换总数 |
+| `dgx_spark_interrupts_total` | Counter | | 中断总数 |
+| `dgx_spark_file_descriptors_allocated` | Gauge | | 已分配的文件描述符数 |
+| `dgx_spark_file_descriptors_free` | Gauge | | 空闲的文件描述符数 |
+| `dgx_spark_file_descriptors_max` | Gauge | | 最大文件描述符数 |
+
+### 交换空间指标
+
+| 指标名 | 类型 | 描述 |
+|--------|------|------|
+| `dgx_spark_swap_total_bytes` | Gauge | 交换空间总量（字节） |
+| `dgx_spark_swap_used_bytes` | Gauge | 已用交换空间（字节） |
+| `dgx_spark_swap_free_bytes` | Gauge | 可用交换空间（字节） |
+
+### 功耗指标
+
+| 指标名 | 类型 | 标签 | 描述 |
+|--------|------|------|------|
+| `dgx_spark_system_power_watts` | Gauge | source | 系统功耗（瓦特） |
+| `dgx_spark_cpu_package_power_watts` | Gauge | package | CPU 封装功耗（瓦特）(RAPL) |
+| `dgx_spark_dram_power_watts` | Gauge | package | DRAM 功耗（瓦特）(RAPL) |
+
+### 存储温度指标
+
+| 指标名 | 类型 | 标签 | 描述 |
+|--------|------|------|------|
+| `dgx_spark_nvme_temperature_celsius` | Gauge | device | NVMe 温度（摄氏度） |
+| `dgx_spark_disk_temperature_celsius` | Gauge | device | 磁盘温度（摄氏度） |
+
 ### 构建信息
 
 | 指标名 | 类型 | 标签 | 描述 |
@@ -119,10 +158,12 @@ make build
 | `-log-level` | `info` | 日志级别 (debug, info, warn, error) |
 | `-scrape-timeout` | `10s` | GPU 采集超时时间 |
 | `-interfaces` | (自动) | 要监控的网络接口 |
-| `-collectors` | `cpu,gpu,memory,disk,network` | 启用的采集器 |
+| `-collectors` | `cpu,gpu,memory,disk,network,system,swap,power,storage` | 启用的采集器 |
 | `-root-mount` | `/` | 存储指标的根挂载点 |
 | `-thermal-zones` | `10` | 扫描的热区数量 |
 | `-max-cpus` | `256` | 最大 CPU 核心扫描数 |
+| `-power-source` | `auto` | 功耗监控源 (auto, rapl, acpi, estimated) |
+| `-powercap-path` | `/sys/class/powercap` | powercap 接口路径 |
 
 ### 环境变量
 
@@ -203,11 +244,19 @@ scrape_configs:
 | CPU 使用率 | `/proc/stat` |
 | CPU 温度 | `/sys/class/thermal/thermal_zone*/` |
 | CPU 频率 | `/sys/devices/system/cpu/cpu*/cpufreq/` |
+| CPU 时间 | `/proc/stat` |
 | GPU 指标 | `nvidia-smi` |
 | 内存 | `/proc/meminfo` |
+| 交换空间 | `/proc/meminfo` |
 | 磁盘 I/O | `/proc/diskstats` |
 | 存储 | `statfs()` |
 | 网络 | `/sys/class/net/*/statistics/` |
+| 系统负载 | `/proc/loadavg` |
+| 系统运行时间 | `/proc/uptime` |
+| 进程 | `/proc/stat` |
+| 文件描述符 | `/proc/sys/fs/file-nr` |
+| 系统功耗 | `/sys/class/powercap/`, `nvidia-smi`, 估算 |
+| NVMe 温度 | `/sys/class/hwmon/` |
 
 ## 开发
 

@@ -18,6 +18,8 @@ type Config struct {
 	RootMountPoint    string
 	ThermalZoneCount  int
 	MaxCPUCount       int
+	PowerSource       string
+	PowercapPath      string
 }
 
 func Load() *Config {
@@ -30,10 +32,12 @@ func Load() *Config {
 	flag.StringVar(&cfg.RootMountPoint, "root-mount", getEnv("ROOT_MOUNT", "/"), "Root mount point for storage metrics")
 	flag.IntVar(&cfg.ThermalZoneCount, "thermal-zones", 10, "Number of thermal zones to scan")
 	flag.IntVar(&cfg.MaxCPUCount, "max-cpus", 256, "Maximum number of CPU cores to scan")
+	flag.StringVar(&cfg.PowerSource, "power-source", getEnv("POWER_SOURCE", "auto"), "Power monitoring source (auto, rapl, acpi, estimated)")
+	flag.StringVar(&cfg.PowercapPath, "powercap-path", getEnv("POWERCAP_PATH", "/sys/class/powercap"), "Path to powercap interface")
 
 	ifaces := flag.String("interfaces", getEnv("NETWORK_INTERFACES", "enP7s7,enp1s0f1np1,enP2p1s0f1np1,enp1s0f0np0,enP2p1s0f0np0,wlP9s9"), "Comma-separated list of network interfaces to monitor")
 
-	collectors := flag.String("collectors", getEnv("COLLECTORS", "cpu,gpu,memory,disk,network"), "Comma-separated list of collectors to enable")
+	collectors := flag.String("collectors", getEnv("COLLECTORS", "cpu,gpu,memory,disk,network,system,swap,power,storage"), "Comma-separated list of collectors to enable")
 
 	flag.Parse()
 

@@ -31,11 +31,13 @@ All metrics are prefixed with `dgx_spark_` namespace.
 
 ### CPU Metrics
 
-| Metric | Type | Description |
-|--------|------|-------------|
-| `dgx_spark_cpu_usage_ratio` | Gauge | CPU usage ratio (0-1) |
-| `dgx_spark_cpu_temperature_celsius` | Gauge | CPU temperature in Celsius |
-| `dgx_spark_cpu_frequency_hertz` | Gauge | Average CPU core frequency in Hz |
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `dgx_spark_cpu_usage_ratio` | Gauge | | CPU usage ratio (0-1) |
+| `dgx_spark_cpu_temperature_celsius` | Gauge | zone, type | CPU temperature in Celsius |
+| `dgx_spark_cpu_frequency_hertz` | Gauge | | Average CPU core frequency in Hz |
+| `dgx_spark_cpu_time_seconds_total` | Counter | mode | Total CPU time spent in each mode |
+| `dgx_spark_cpu_cores` | Gauge | | Number of CPU cores |
 
 ### GPU Metrics
 
@@ -84,6 +86,43 @@ All metrics are prefixed with `dgx_spark_` namespace.
 | `dgx_spark_network_receive_dropped_total` | Counter | interface | Total receive dropped |
 | `dgx_spark_network_transmit_dropped_total` | Counter | interface | Total transmit dropped |
 
+### System Metrics
+
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `dgx_spark_load_average` | Gauge | period | System load average (1m, 5m, 15m) |
+| `dgx_spark_system_uptime_seconds` | Gauge | | System uptime in seconds |
+| `dgx_spark_processes_running` | Gauge | | Number of running processes |
+| `dgx_spark_processes_blocked` | Gauge | | Number of blocked processes |
+| `dgx_spark_context_switches_total` | Counter | | Total context switches |
+| `dgx_spark_interrupts_total` | Counter | | Total interrupts |
+| `dgx_spark_file_descriptors_allocated` | Gauge | | Allocated file descriptors |
+| `dgx_spark_file_descriptors_free` | Gauge | | Free file descriptors |
+| `dgx_spark_file_descriptors_max` | Gauge | | Maximum file descriptors |
+
+### Swap Metrics
+
+| Metric | Type | Description |
+|--------|------|-------------|
+| `dgx_spark_swap_total_bytes` | Gauge | Total swap space in bytes |
+| `dgx_spark_swap_used_bytes` | Gauge | Used swap space in bytes |
+| `dgx_spark_swap_free_bytes` | Gauge | Free swap space in bytes |
+
+### Power Metrics
+
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `dgx_spark_system_power_watts` | Gauge | source | System power consumption in Watts |
+| `dgx_spark_cpu_package_power_watts` | Gauge | package | CPU package power in Watts (RAPL) |
+| `dgx_spark_dram_power_watts` | Gauge | package | DRAM power in Watts (RAPL) |
+
+### Storage Metrics
+
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `dgx_spark_nvme_temperature_celsius` | Gauge | device | NVMe temperature in Celsius |
+| `dgx_spark_disk_temperature_celsius` | Gauge | device | Disk temperature in Celsius |
+
 ### Build Info
 
 | Metric | Type | Labels | Description |
@@ -117,10 +156,12 @@ Metrics available at `http://localhost:9876/metrics`
 | `-log-level` | `info` | Log level (debug, info, warn, error) |
 | `-scrape-timeout` | `10s` | GPU scrape timeout |
 | `-interfaces` | (auto) | Network interfaces to monitor |
-| `-collectors` | `cpu,gpu,memory,disk,network` | Enabled collectors |
+| `-collectors` | `cpu,gpu,memory,disk,network,system,swap,power,storage` | Enabled collectors |
 | `-root-mount` | `/` | Root mount for storage metrics |
 | `-thermal-zones` | `10` | Thermal zones to scan |
 | `-max-cpus` | `256` | Max CPU cores to scan |
+| `-power-source` | `auto` | Power monitoring source (auto, rapl, acpi, estimated) |
+| `-powercap-path` | `/sys/class/powercap` | Path to powercap interface |
 
 ### Environment Variables
 
@@ -201,11 +242,19 @@ Import `deploy/grafana-dashboard.json` into Grafana for ready-to-use visualizati
 | CPU usage | `/proc/stat` |
 | CPU temperature | `/sys/class/thermal/thermal_zone*/` |
 | CPU frequency | `/sys/devices/system/cpu/cpu*/cpufreq/` |
+| CPU time | `/proc/stat` |
 | GPU metrics | `nvidia-smi` |
 | Memory | `/proc/meminfo` |
+| Swap | `/proc/meminfo` |
 | Disk I/O | `/proc/diskstats` |
 | Storage | `statfs()` |
 | Network | `/sys/class/net/*/statistics/` |
+| System load | `/proc/loadavg` |
+| System uptime | `/proc/uptime` |
+| Processes | `/proc/stat` |
+| File descriptors | `/proc/sys/fs/file-nr` |
+| System power | `/sys/class/powercap/`, `nvidia-smi`, estimated |
+| NVMe temperature | `/sys/class/hwmon/` |
 
 ## Development
 
